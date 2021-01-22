@@ -5,22 +5,29 @@ import mineralProfiles from './data/mineral_profiles.json';
 
 export default function solveWaterChemistry (sourceProfile, targetProfile, availableMinerals, nLitres) {
   const waterVolume = (nLitres || 1.0);
-  let margins = {};
-  if (targetProfile['margin']) {
-    margins = targetProfile['margin'];
-  }
 
   // store keys to ensure dictionaries are traversed in the same order
   const ionNames = Object.keys(sourceProfile);
   const allMinerals = mineralProfiles.map((m) => m.mineral);
-  
+
+  // add (or fill) margins of error
+  let margins = {};
+  if (targetProfile['margin']) {
+    margins = targetProfile['margin'];
+  } else {
+    for (let i = 0; i < ionNames.length; i++) {
+      const ion = ionNames[i];
+      margins[ion] = 1.0;
+    }
+  }
+
   // if "in stock" minerals empty or undefined, assume all in stock
   if (availableMinerals === null ||
       availableMinerals === undefined ||
       Object.keys(availableMinerals).length === 0) {
     let availableMinerals = {};
     for (let i = 0; i < allMinerals.length; i++) {
-      let mineral = allMinerals[i];
+      const mineral = allMinerals[i];
       availableMinerals[mineral] = true;
     }
   };
@@ -29,16 +36,16 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, avail
   const mineralNames = allMinerals.filter((m) => availableMinerals[m]);
 
   // scale target variables according to the acceptable margin of error
-  const y = ionNames.map((ion) => ((targetProfile[ion] - sourceProfile[ion]) / (margins[ion] || 1.0)));
+  const y = ionNames.map((ion) => ((targetProfile[ion] - sourceProfile[ion]) / margins[ion]));
 
   // traverse mineral contribution data
   let X = [];
   for (let i = 0; i < ionNames.length; i++) {
     let X_row = [];
-    let ion = ionNames[i];
+    const ion = ionNames[i];
     for (let j = 0; j < mineralNames.length; j++) {
-      let mineral = mineralProfiles[j];
-      const mineralValue = (mineral[ion] || 0.0) / (margins[ion] || 1.0);
+      const mineral = mineralProfiles[j];
+      const mineralValue = parseFloat(mineral[ion] || 0.0) / margins[ion];
       X_row.push(mineralValue);
     };
     X.push(X_row);
@@ -73,8 +80,9 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, avail
     if (! isNaN(scaledValue) ) {
       for  (let j = 0; j < ionNames.length; j++) {
         const ion = ionNames[j];
-        const contribution = (mineral[ion] || 0.0) * scaledValue;
-        apparentProfile[ion] = (apparentProfile[ion] || sourceProfile[ion]) + contribution;
+        const mineralValue = parseFloat(mineral[ion] || 0.0);
+        const contribution = mineralValue * scaledValue;
+        apparentProfile[ion] = parseFloat(apparentProfile[ion] || sourceProfile[ion]) + contribution;
       }
     }
   }
