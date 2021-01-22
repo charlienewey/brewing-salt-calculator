@@ -14,7 +14,7 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, nLitr
   for (let i = 0; i < ionNames.length; i++) {
     let X_row = [];
     for (let j = 0; j < mineralNames.length; j++) {
-      X_row.push(MineralProfiles[i][ionNames[j]] || 0.0);
+      X_row.push(MineralProfiles[j][ionNames[i]] || 0.0);
     }
     X.push(X_row);
   };
