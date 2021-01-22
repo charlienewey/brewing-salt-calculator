@@ -1,9 +1,9 @@
 [
-    {"selector": "water_profile", "name": "Water Profile", "sortable": true},
-    {"selector": "calcium", "name": "Calcium", "sortable": true},
-    {"selector": "magnesium", "name": "Magnesium", "sortable": true},
-    {"selector": "sodium", "name": "Sodium", "sortable": true},
-    {"selector": "sulfate", "name": "Sulfate", "sortable": true},
-    {"selector": "chloride", "name": "Chloride", "sortable": true},
-    {"selector": "bicarbonate", "name": "Bicarbonate", "sortable": true}
+    {"selector": "style", "name": "Beer Style", "sortable": true, "grow": 4.0},
+    {"selector": "calcium.midpoint", "name": "Calcium", "sortable": true},
+    {"selector": "magnesium.midpoint", "name": "Magnesium", "sortable": true},
+    {"selector": "sodium.midpoint", "name": "Sodium", "sortable": true},
+    {"selector": "sulfate.midpoint", "name": "Sulfate", "sortable": true},
+    {"selector": "chloride.midpoint", "name": "Chloride", "sortable": true},
+    {"selector": "bicarbonate.midpoint", "name": "Bicarbonate", "sortable": true}
 ]
