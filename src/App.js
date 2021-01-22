@@ -172,6 +172,13 @@ class SaltSolverApp extends React.Component  {
             <Typography variant='h6' gutterBottom>
               Source Water Profile Input
             </Typography>
+
+            <Typography gutterBottom>
+              Enter your source water profile here, with each mineral in parts per million.
+
+              <br />
+              The default values here are those of Reverse Osmosis water - so if that's what you're using, just click "Next".
+            </Typography>
             <br />
             <IonProfileEntry
               classNames='sourceProfile'
@@ -185,6 +192,14 @@ class SaltSolverApp extends React.Component  {
           <React.Fragment>
             <Typography variant='h6' gutterBottom>
               Target Water Profile Input
+            </Typography>
+
+            <Typography gutterBottom>
+              Enter the values for your target water profile here. If you aren't sure which values to go for,
+              try using one of the presets listed in the table below. For example, if you're brewing an American IPA,
+              it's probably a good idea to use the "Pale Ale Profile".
+
+              These values come <em>directly</em> from <a href="https://www.brunwater.com/">Martin Brungard's "Bru'n Water" spreadsheet</a>.
             </Typography>
             <br />
             <div>
