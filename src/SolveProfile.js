@@ -7,7 +7,7 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, nLitr
   // traverse both dictionaries in the same order
   const ionNames = Object.keys(sourceProfile);
 
-  // scale target variables to 1.0 - use MAPE rather than MSE as objective func
+  // scale target variables to 1.0 - i.e. use MAPE rather than MSE as objective func
   let y = ionNames.map((ion) => (targetProfile[ion] - sourceProfile[ion]) / targetProfile[ion]);
 
   // traverse mineral contribution data
@@ -32,7 +32,7 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, nLitr
   // convert result into a dictionary
   let w_return = {};
   for (let i = 0; i < mineralNames.length; i++) {
-    let scaledValue = ((w[i] / y[i]) * nLitres).toFixed(1);
+    let scaledValue = ((w[i] / y[i]) * nLitres).toFixed(2);
     if (isNaN(scaledValue)) {
       w_return[MineralProfiles[i]['mineral']] = "0.0";
     } else {
