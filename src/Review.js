@@ -27,23 +27,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Review(props) {
-  console.log('state', props.state);
   const classes = useStyles();
 
-  const source = props.state.sourceProfile;
-  const target = props.state.targetProfile;
+  const source = {...props.state.sourceProfile};
+  const target = {...props.state.targetProfile};
+
   const availableMinerals = props.state.brewingProfile.availableMinerals;
   const waterVolume = parseFloat(props.state.brewingProfile.waterVolume);
 
-  console.log(props.state);
-
   const minerals = mineralProfiles.map((m) => m.mineral);
-  const keys = Object.keys(source);
+  const ions = Object.keys(source);
 
-  let solved = {...target};
+  // create blank solution profile
+  let solved = {};
+  for (let i = 0; i < minerals.length; i++) {
+    let mineral = minerals[i];
+    solved[mineral] = 0.0
+  };
+
   let scaledMineralAdditions = {};
   minerals.map((m) => scaledMineralAdditions[m] = 0.0);
   let unscaledMineralAdditions = {...scaledMineralAdditions};
+
   if (JSON.stringify(source) !== JSON.stringify(target)) {
     const solverOutput = solveWaterChemistry(source, target, availableMinerals, waterVolume);
     solved = {...solverOutput['apparentProfile']};
@@ -62,7 +67,7 @@ export default function Review(props) {
           <TableHead>
             <TableRow>
               <TableCell></TableCell>
-              {keys.map((key) => (
+              {ions.map((key) => (
                 <TableCell key={key} align='right'>{key.charAt(0).toUpperCase() + key.slice(1)}</TableCell>
               ))}
             </TableRow>
@@ -70,36 +75,36 @@ export default function Review(props) {
           <TableBody>
             <TableRow>
               <TableCell component='th' scope='row'>Source Water Profile</TableCell>
-                {keys.map((key) => (
-                  <TableCell key={key} align='right'>
-                    {source[key]}
+                {ions.map((ion) => (
+                  <TableCell key={ion} align='right'>
+                    {source[ion]}
                   </TableCell>
                 ))}
             </TableRow>
 
             <TableRow>
               <TableCell component='th' scope='row'>Target Water Profile (± Margin of Error)</TableCell>
-                {keys.map((key) => (
-                  <TableCell key={key} align='right'>
-                    {target[key] + ' (±' + target['margin'][key] + ')'}
+                {ions.map((ion) => (
+                  <TableCell key={ion} align='right'>
+                    {target[ion] + ' (±' + target['margin'][ion] + ')'}
                   </TableCell>
                 ))}
             </TableRow>
 
             <TableRow>
               <TableCell component='th' scope='row'><strong>Optimised Water Profile</strong></TableCell>
-                {keys.map((key) => (
-                  <TableCell key={key} align='right'>
-                    <strong>{solved[key].toFixed(0)}</strong>
+                {ions.map((ion) => (
+                  <TableCell key={ion} align='right'>
+                    <strong>{solved[ion].toFixed(0)}</strong>
                   </TableCell>
                 ))}
             </TableRow>
 
             <TableRow>
               <TableCell component='th' scope='row'>Suitable?</TableCell>
-                {keys.map((key) => (
-                  <TableCell key={key} align='right'>
-                    {Math.abs(solved[key].toFixed(0) - target[key]) <= target['margin'][key] ? '✓' : '✗' }
+                {ions.map((ion) => (
+                  <TableCell key={ion} align='right'>
+                    {Math.abs(solved[ion].toFixed(0) - target[ion]) <= target['margin'][ion] ? '✓' : '✗' }
                   </TableCell>
                 ))}
             </TableRow>
@@ -117,8 +122,8 @@ export default function Review(props) {
           <TableHead>
             <TableRow>
               <TableCell></TableCell>
-              {minerals.map((key) => (
-                <TableCell key={key} align='right'>{key}</TableCell>
+              {minerals.map((m) => (
+                <TableCell key={m} align='right'>{m}</TableCell>
               ))}
             </TableRow>
           </TableHead>

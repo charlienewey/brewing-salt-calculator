@@ -291,10 +291,10 @@ class SaltSolverApp extends React.Component  {
                 )}
 
                 {this.state.activeStep < this.steps.length - 1 ? (
-                  <Button variant='contained' color='primary' onClick={this.handleNext} className={this.classes.button}>Next</Button>
-                ) : (
-                  <Button variant='contained' color='primary' onClick={window.print} className={this.classes.button}>Print Summary</Button>
-                )
+                    <Button variant='contained' color='primary' onClick={this.handleNext} className={this.classes.button}>Next</Button>
+                  ) : (
+                    <Button variant='contained' color='primary' onClick={window.print} className={this.classes.button}>Print Summary</Button>
+                  )
                 }
               </div>
             </React.Fragment>

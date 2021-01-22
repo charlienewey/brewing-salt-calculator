@@ -5,6 +5,7 @@ import mineralProfiles from './data/mineral_profiles.json';
 
 export default function solveWaterChemistry (sourceProfile, targetProfile, availableMinerals, nLitres) {
   const waterVolume = (nLitres || 1.0);
+  const margins = targetProfile['margin'];
 
   // store keys to ensure dictionaries are traversed in the same order
   const ionNames = Object.keys(sourceProfile);
@@ -24,8 +25,8 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, avail
   // filter for allowable minerals
   const mineralNames = allMinerals.filter((m) => availableMinerals[m]);
 
-  // scale target variables to 1.0 - i.e. use MAPE rather than MSE as objective func
-  const y = ionNames.map((ion) => (targetProfile[ion] - sourceProfile[ion]));
+  // scale target variables according to the acceptable margin of error
+  const y = ionNames.map((ion) => ((targetProfile[ion] - sourceProfile[ion]) / margins[ion]));
 
   // traverse mineral contribution data
   let X = [];
@@ -34,7 +35,7 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, avail
     let ion = ionNames[i];
     for (let j = 0; j < mineralNames.length; j++) {
       let mineral = mineralProfiles[j];
-      const mineralValue = ((mineral[ion] || 0.0) || 0.0);
+      const mineralValue = (mineral[ion] || 0.0) / margins[ion];
       X_row.push(mineralValue);
     };
     X.push(X_row);
@@ -75,6 +76,32 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, avail
     }
   }
 
+  // ensure all fields are populated
+  for (let i = 0; i < ionNames.length; i++) {
+    let mineral = mineralNames[i];
+    if (wUnscaled[mineral] === undefined || wUnscaled[mineral] === null) {
+      wUnscaled[mineral] = 0.0;
+    } else {
+      wUnscaled[mineral] = parseFloat(wUnscaled[mineral]);
+    }
+
+    if (wScaled[mineral] === undefined || wScaled[mineral] === null) {
+      wScaled[mineral] = 0.0;
+    } else {
+      wScaled[mineral] = parseFloat(wScaled[mineral]);
+    }
+  }
+
+  for (let i = 0; i < ionNames.length; i++) {
+    let ion = ionNames[i];
+    if (apparentProfile[ion] === undefined || apparentProfile[ion] === null) {
+      apparentProfile[ion] = 0.0;
+    } else {
+      apparentProfile[ion] = parseFloat(apparentProfile[ion]);
+    }
+  }
+
+  // define the return object
   const solvedProfile = {
     unscaledAdditions: wUnscaled,
     scaledAdditions: wScaled,
