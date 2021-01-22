@@ -22,91 +22,25 @@ class IonProfileEntry extends React.Component {
 
   render () {
     const classNames = [this.classNames, 'IonEntry'].join(' ')
+    const ions = ['calcium', 'magnesium', 'sodium', 'sulfate', 'chloride', 'bicarbonate'];
+
     return (
       <Grid container justify='center' className={classNames} spacing={1}>
-        <Grid item xs={12} sm={6} md={4} lg={2}>
-          <TextField
-            label='Calcium'
-            type='number'
-            min={0.0}
-            value={this.props.state.calcium}
-            onChange={(e) => this.handleIonChange(e, 'calcium')}
-            InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
-            variant="outlined"
-            required
-            fullWidth
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={2}>
-          <TextField
-            label='Magnesium'
-            type='number'
-            min={0.0}
-            value={this.props.state.magnesium}
-            onChange={(e) => this.handleIonChange(e, 'magnesium')}
-            InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
-            variant="outlined"
-            required
-            fullWidth
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={2}>
-          <TextField
-            label='Sodium'
-            type='number'
-            min={0.0}
-            value={this.props.state.sodium}
-            onChange={(e) => this.handleIonChange(e, 'sodium')}
-            InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
-            variant="outlined"
-            required
-            fullWidth
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={2}>
-          <TextField
-            label='Sulfate'
-            type='number'
-            min={0.0}
-            value={this.props.state.sulfate}
-            onChange={(e) => this.handleIonChange(e, 'sulfate')}
-            InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
-            variant="outlined"
-            required
-            fullWidth
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={2}>
-          <TextField
-            label='Chloride'
-            type='number'
-            min={0.0}
-            value={this.props.state.chloride}
-            onChange={(e) => this.handleIonChange(e, 'chloride')}
-            InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
-            variant="outlined"
-            required
-            fullWidth
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4} lg={2}>
-          <TextField
-            label='Bicarbonate'
-            type='number'
-            min={0.0}
-            value={this.props.state.bicarbonate}
-            onChange={(e) => this.handleIonChange(e, 'bicarbonate')}
-            InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
-            variant="outlined"
-            required
-            fullWidth
-          />
-        </Grid>
+        {ions.map((ion) => (
+          <Grid item xs={12} sm={6} md={4} lg={2}>
+            <TextField
+              label={ion.charAt(0).toUpperCase() + ion.slice(1)}
+              type='number'
+              min={0.0}
+              value={this.props.state[ion]}
+              onChange={(e) => this.handleIonChange(e, ion)}
+              InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
+              variant="outlined"
+              required
+              fullWidth
+            />
+          </Grid>
+        ))}
       </Grid>
     );
   }
