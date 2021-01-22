@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Grid, TextField } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 
@@ -45,8 +46,8 @@ class MineralEntry extends React.Component {
   render () {
     let classNames = [this.classNames, 'MineralEntry'].join(' ')
     return (
-      <Grid container justify='center' className={classNames} spacing={2}>
-        <form onSubmit={this.handleSubmit}>
+      <Grid container justify='center' className={classNames} spacing={1}>
+        <Grid item xs={12} sm={6} md={4} lg={2}>
           <TextField
             label='Calcium'
             type='number'
@@ -55,8 +56,12 @@ class MineralEntry extends React.Component {
             onChange={(e) => this.handleSingleChange(e, 'calcium')}
             InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
             variant="outlined"
+            required
+            fullWidth
           />
+        </Grid>
 
+        <Grid item xs={12} sm={6} md={4} lg={2}>
           <TextField
             label='Magnesium'
             type='number'
@@ -65,8 +70,12 @@ class MineralEntry extends React.Component {
             onChange={(e) => this.handleSingleChange(e, 'magnesium')}
             InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
             variant="outlined"
+            required
+            fullWidth
           />
+        </Grid>
 
+        <Grid item xs={12} sm={6} md={4} lg={2}>
           <TextField
             label='Sodium'
             type='number'
@@ -75,8 +84,12 @@ class MineralEntry extends React.Component {
             onChange={(e) => this.handleSingleChange(e, 'sodium')}
             InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
             variant="outlined"
+            required
+            fullWidth
           />
+        </Grid>
 
+        <Grid item xs={12} sm={6} md={4} lg={2}>
           <TextField
             label='Sulfate'
             type='number'
@@ -85,8 +98,12 @@ class MineralEntry extends React.Component {
             onChange={(e) => this.handleSingleChange(e, 'sulfate')}
             InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
             variant="outlined"
+            required
+            fullWidth
           />
+        </Grid>
 
+        <Grid item xs={12} sm={6} md={4} lg={2}>
           <TextField
             label='Chloride'
             type='number'
@@ -95,11 +112,13 @@ class MineralEntry extends React.Component {
             onChange={(e) => this.handleSingleChange(e, 'chloride')}
             InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
             variant="outlined"
+            required
+            fullWidth
           />
-        </form>
+        </Grid>
       </Grid>
     );
   }
 }
 
-export { MineralEntry };
+export default MineralEntry;
