@@ -83,10 +83,10 @@ export default function Review(props) {
             </TableRow>
 
             <TableRow>
-              <TableCell component='th' scope='row'>Target Water Profile (± Margin of Error)</TableCell>
+              <TableCell component='th' scope='row'>Target Water Profile{target['margin'] ? ' (± Margin of Error)' : null}</TableCell>
                 {ions.map((ion) => (
                   <TableCell key={ion} align='right'>
-                    {target[ion] + ' (±' + target['margin'][ion] + ')'}
+                    {target[ion] + (target['margin'] ? ' (±' + target['margin'][ion] + ')' : '')}
                   </TableCell>
                 ))}
             </TableRow>
@@ -100,14 +100,16 @@ export default function Review(props) {
                 ))}
             </TableRow>
 
-            <TableRow>
-              <TableCell component='th' scope='row'>Suitable?</TableCell>
-                {ions.map((ion) => (
-                  <TableCell key={ion} align='right'>
-                    {Math.abs(solved[ion].toFixed(0) - target[ion]) <= target['margin'][ion] ? '✓' : '✗' }
-                  </TableCell>
-                ))}
-            </TableRow>
+            {target['margin'] ? (
+              <TableRow>
+                <TableCell component='th' scope='row'>Suitable?</TableCell>
+                  {ions.map((ion) => (
+                    <TableCell key={ion} align='right'>
+                      {Math.abs(solved[ion].toFixed(0) - target[ion]) <= target['margin'][ion] ? '✓' : '✗' }
+                    </TableCell>
+                  ))}
+              </TableRow>
+            ) : null}
           </TableBody>
         </Table>
       </TableContainer>

@@ -5,7 +5,10 @@ import mineralProfiles from './data/mineral_profiles.json';
 
 export default function solveWaterChemistry (sourceProfile, targetProfile, availableMinerals, nLitres) {
   const waterVolume = (nLitres || 1.0);
-  const margins = targetProfile['margin'];
+  let margins = {};
+  if (targetProfile['margin']) {
+    margins = targetProfile['margin'];
+  }
 
   // store keys to ensure dictionaries are traversed in the same order
   const ionNames = Object.keys(sourceProfile);
@@ -26,7 +29,7 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, avail
   const mineralNames = allMinerals.filter((m) => availableMinerals[m]);
 
   // scale target variables according to the acceptable margin of error
-  const y = ionNames.map((ion) => ((targetProfile[ion] - sourceProfile[ion]) / margins[ion]));
+  const y = ionNames.map((ion) => ((targetProfile[ion] - sourceProfile[ion]) / (margins[ion] || 1.0)));
 
   // traverse mineral contribution data
   let X = [];
@@ -35,7 +38,7 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, avail
     let ion = ionNames[i];
     for (let j = 0; j < mineralNames.length; j++) {
       let mineral = mineralProfiles[j];
-      const mineralValue = (mineral[ion] || 0.0) / margins[ion];
+      const mineralValue = (mineral[ion] || 0.0) / (margins[ion] || 1.0);
       X_row.push(mineralValue);
     };
     X.push(X_row);
