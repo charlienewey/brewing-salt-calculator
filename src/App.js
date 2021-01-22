@@ -16,7 +16,7 @@ import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
 import IonProfileEntry from './IonProfileEntry';
-import solveWaterChemistry from './Solve';
+import BrewEntry from './BrewEntry';
 import { WaterProfilesTable } from './DataTables';
 import Review from './Review';
 
@@ -33,9 +33,9 @@ const roWater = {
 
 function Copyright() {
   return (
-    <Typography variant="body2" color="textSecondary" align="center">
+    <Typography variant='body2' color='textSecondary' align='center'>
       {'Copyright © '}
-      <Link color="inherit" href="https://github.com/charlienewey/">
+      <Link color='inherit' href='https://github.com/charlienewey/'>
         Charles Newey
       </Link>{' '}
       {new Date().getFullYear()}
@@ -50,7 +50,7 @@ const styles = (theme) => ({
     marginLeft: theme.spacing(2),
     marginRight: theme.spacing(2),
     [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
-      width: 1280,
+      width: 1024,
       marginLeft: 'auto',
       marginRight: 'auto',
     },
@@ -79,22 +79,33 @@ const styles = (theme) => ({
 });
 
 class SaltSolverApp extends React.Component  {
-  steps = ['Source profile input', 'Target profile input', 'Solve', 'Review your changes'];
+  steps = ['Source profile input', 'Target profile input', 'Brew parameter input', 'Review your changes'];
+
+  defaultState = {
+    activeStep: 0,
+    sourceProfile: {...roWater},
+    targetProfile: {...roWater},
+    brewingProfile: {
+      waterVolume: 20.0,
+      availableMinerals: {
+        Gypsum: true,
+        CalciumChloride: true,
+        EpsomSalt: true,
+        MagnesiumChloride: false,
+        CanningSalt: true,
+        BakingSoda: true,
+        Chalk: true,
+        PicklingLime: false
+      }
+    }
+  };
 
   constructor (props) {
     super(props);
     this.classes = props.classes;
 
-
     if (props.state === undefined || props.state === null) {
-      const defaultSourceProfile = {...roWater};
-      const defaultTargetProfile = {...roWater};
-
-      this.state = {
-        activeStep: 0,
-        sourceProfile: defaultSourceProfile,
-        targetProfile: defaultTargetProfile 
-      };
+      this.state = {...this.defaultState};
     } else {
       this.state = props.state;
     };
@@ -102,6 +113,8 @@ class SaltSolverApp extends React.Component  {
     // water profile state
     this.handleSourceProfileChange = this.handleSourceProfileChange.bind(this);
     this.handleTargetProfileChange = this.handleTargetProfileChange.bind(this);
+    this.handleMineralInventoryChange = this.handleMineralInventoryChange.bind(this);
+    this.handleVolumeChange = this.handleVolumeChange.bind(this);
     this.selectPresetTarget = this.selectPresetTarget.bind(this);
 
     // pagination state controls
@@ -115,16 +128,28 @@ class SaltSolverApp extends React.Component  {
     };
   };
 
-  handleSourceProfileChange (amount, mineral) {
-    var sourceProfile = this.state.sourceProfile || {}; 
-    sourceProfile[mineral] = amount;
-    this.setState({sourceProfile});
+  handleSourceProfileChange (amount, ion) {
+    var sourceProfile = this.state.sourceProfile || this.defaultState.sourceProfile; 
+    sourceProfile[ion] = amount;
+    this.setState({sourceProfile: sourceProfile});
   };
 
-  handleTargetProfileChange (amount, mineral) {
-    var targetProfile = this.state.targetProfile || {}; 
-    targetProfile[mineral] = amount;
-    this.setState({targetProfile});
+  handleTargetProfileChange (amount, ion) {
+    var targetProfile = this.state.targetProfile || this.defaultState.targetProfile; 
+    targetProfile[ion] = amount;
+    this.setState({targetProfile: targetProfile});
+  };
+
+  handleMineralInventoryChange (availability, mineral) {
+    var brewingProfile = this.state.brewingProfile || this.defaultState.brewingProfile;
+    brewingProfile.availableMinerals[mineral] = availability;
+    this.setState({brewingProfile: brewingProfile});
+  };
+
+  handleVolumeChange (amount) {
+    var brewingProfile = this.state.brewingProfile || this.defaultState.brewingProfile;
+    brewingProfile.waterVolume = amount;
+    this.setState({brewingProfile: brewingProfile});
   };
 
   selectPresetTarget (row) {
@@ -144,7 +169,7 @@ class SaltSolverApp extends React.Component  {
       case 0:
         return (
           <React.Fragment>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant='h6' gutterBottom>
               Source Water Profile Input
             </Typography>
             <br />
@@ -158,7 +183,7 @@ class SaltSolverApp extends React.Component  {
       case 1:
         return (
           <React.Fragment>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant='h6' gutterBottom>
               Target Water Profile Input
             </Typography>
             <br />
@@ -173,8 +198,8 @@ class SaltSolverApp extends React.Component  {
             <Accordion>
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel2a-content"
-                id="panel2a-header">
+                aria-controls='panel2a-content'
+                id='panel2a-header'>
                 Water Profile Presets
               </AccordionSummary>
               <AccordionDetails>
@@ -186,10 +211,15 @@ class SaltSolverApp extends React.Component  {
           </React.Fragment>
         );
       case 2:
-        console.log(this.state);
-        return <h1>HI</h1>;
+        return (
+          <BrewEntry
+            state={this.state.brewingProfile}
+            onMineralChange={this.handleMineralInventoryChange}
+            onVolumeChange={this.handleVolumeChange}>
+          </BrewEntry>
+        );
       case 3:
-        return <Review />;
+        return <Review state={this.state} />
       default:
         throw new Error('Unknown step');
     }
@@ -201,7 +231,7 @@ class SaltSolverApp extends React.Component  {
         <CssBaseline />
         <main className={this.classes.layout}>
           <Paper className={this.classes.paper}>
-            <Typography component="h1" variant="h4" align="center">
+            <Typography component='h1' variant='h4' align='center'>
               Brewing Salt Calculator
             </Typography>
 
@@ -214,36 +244,21 @@ class SaltSolverApp extends React.Component  {
             </Stepper>
 
             <React.Fragment>
-              {this.state.activeStep === this.steps.length ? (
-                <React.Fragment>
-                  <Typography variant="h5" gutterBottom>
-                    Thank you for your order.
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    Your order number is #2001539. We have emailed your order confirmation, and will
-                    send you an update when your order has shipped.
-                  </Typography>
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  {this.getStepContent(this.state.activeStep, this.selectRow)}
-                  <div className={this.classes.buttons}>
-                    {this.state.activeStep !== 0 && (
-                      <Button onClick={this.handleBack} className={this.classes.button}>
-                        Back
-                      </Button>
-                    )}
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={this.handleNext}
-                      className={this.classes.button}
-                    >
-                      {this.state.activeStep === this.steps.length - 1 ? 'Print Summary' : 'Next'}
-                    </Button>
-                  </div>
-                </React.Fragment>
-              )}
+              {this.getStepContent(this.state.activeStep)}
+              <div className={this.classes.buttons}>
+                {this.state.activeStep !== 0 && (
+                  <Button onClick={this.handleBack} className={this.classes.button}>
+                    Back
+                  </Button>
+                )}
+
+                {this.state.activeStep < this.steps.length - 1 ? (
+                  <Button variant='contained' color='primary' onClick={this.handleNext} className={this.classes.button}>Next</Button>
+                ) : (
+                  <Button variant='contained' color='primary' onClick={window.print} className={this.classes.button}>Print Summary</Button>
+                )
+                }
+              </div>
             </React.Fragment>
           </Paper>
           <Copyright />

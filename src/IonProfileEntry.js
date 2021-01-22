@@ -27,15 +27,15 @@ class IonProfileEntry extends React.Component {
     return (
       <Grid container justify='center' className={classNames} spacing={1}>
         {ions.map((ion) => (
-          <Grid item xs={12} sm={6} md={4} lg={2}>
+          <Grid key={ion} item xs={12} sm={6} md={4} lg={2}>
             <TextField
               label={ion.charAt(0).toUpperCase() + ion.slice(1)}
               type='number'
               min={0.0}
               value={this.props.state[ion]}
               onChange={(e) => this.handleIonChange(e, ion)}
-              InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
-              variant="outlined"
+              InputProps={{ startAdornment: <InputAdornment position='start'>ppm</InputAdornment> }}
+              variant='outlined'
               required
               fullWidth
             />

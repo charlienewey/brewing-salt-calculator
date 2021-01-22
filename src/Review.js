@@ -1,19 +1,20 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Grid from '@material-ui/core/Grid';
 
-const products = [
-  { name: 'Product 1', desc: 'A nice thing', price: '$9.99' },
-  { name: 'Product 2', desc: 'Another thing', price: '$3.45' },
-  { name: 'Product 3', desc: 'Something else', price: '$6.51' },
-  { name: 'Product 4', desc: 'Best thing of all', price: '$14.11' },
-  { name: 'Shipping', desc: '', price: 'Free' },
-];
-const addresses = ['1 Material-UI Drive', 'Reactville', 'Anytown', '99999', 'USA'];
+import { makeStyles } from '@material-ui/core/styles';
+
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
+
+import solveWaterChemistry from './SolveProfile';
+import mineralProfiles from './data/mineral_profiles.json';
+
 const payments = [
   { name: 'Card type', detail: 'Visa' },
   { name: 'Card holder', detail: 'Mr John Smith' },
@@ -33,54 +34,140 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Review() {
+
+export default function Review(props) {
   const classes = useStyles();
+
+  const source = props.state.sourceProfile;
+  const target = props.state.targetProfile;
+  const waterVolume = props.state.brewingProfile.waterVolume;
+
+  const minerals = mineralProfiles.map((m) => m.mineral);
+  const keys = Object.keys(source);
+
+  let solvedProfile = {...target};
+  let scaledMineralAdditions = {};
+  minerals.map((m) => scaledMineralAdditions[m] = 0.0);
+  let unscaledMineralAdditions = {...scaledMineralAdditions};
+  if (JSON.stringify(source) !== JSON.stringify(target)) {
+    const solverOutput = solveWaterChemistry(source, target, waterVolume);
+    solvedProfile = {...solverOutput['apparentProfile']};
+    scaledMineralAdditions = {...solverOutput['scaledAdditions']};
+    unscaledMineralAdditions = {...solverOutput['unscaledAdditions']};
+  }
 
   return (
     <React.Fragment>
-      <Typography variant="h6" gutterBottom>
-        Order summary
+      <Typography variant='h6' gutterBottom className={classes.title}>Total Water Volume</Typography>
+      <Typography gutterBottom>{waterVolume} litres</Typography>
+      <br />
+
+      <Typography variant='h6' gutterBottom>
+        Water Profile Summary
       </Typography>
-      <List disablePadding>
-        {products.map((product) => (
-          <ListItem className={classes.listItem} key={product.name}>
-            <ListItemText primary={product.name} secondary={product.desc} />
-            <Typography variant="body2">{product.price}</Typography>
-          </ListItem>
-        ))}
-        <ListItem className={classes.listItem}>
-          <ListItemText primary="Total" />
-          <Typography variant="subtitle1" className={classes.total}>
-            $34.06
-          </Typography>
-        </ListItem>
-      </List>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom className={classes.title}>
-            Shipping
-          </Typography>
-          <Typography gutterBottom>John Smith</Typography>
-          <Typography gutterBottom>{addresses.join(', ')}</Typography>
-        </Grid>
-        <Grid item container direction="column" xs={12} sm={6}>
-          <Typography variant="h6" gutterBottom className={classes.title}>
-            Payment details
-          </Typography>
-          <Grid container>
-            {payments.map((payment) => (
-              <React.Fragment key={payment.name}>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.name}</Typography>
-                </Grid>
-                <Grid item xs={6}>
-                  <Typography gutterBottom>{payment.detail}</Typography>
-                </Grid>
-              </React.Fragment>
-            ))}
-          </Grid>
-        </Grid>
-      </Grid>
+
+      <TableContainer component={Paper}>
+        <Table className={classes.table} size='small' aria-label='a dense table'>
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              {keys.map((key) => (
+                <TableCell key={key} align='right'>{key.charAt(0).toUpperCase() + key.slice(1)}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell component='th' scope='row'>Source Water Profile</TableCell>
+                {keys.map((key) => (
+                  <TableCell align='right'>
+                    {source[key]}
+                  </TableCell>
+                ))}
+            </TableRow>
+
+            <TableRow>
+              <TableCell component='th' scope='row'>Target Water Profile</TableCell>
+                {keys.map((key) => (
+                  <TableCell align='right'>
+                    {target[key]}
+                  </TableCell>
+                ))}
+            </TableRow>
+
+            <TableRow>
+              <TableCell component='th' scope='row'><em>Optimised Water Profile</em></TableCell>
+                {keys.map((key) => (
+                  <TableCell align='right'>
+                    <em>{solvedProfile[key].toFixed(0)}</em>
+                  </TableCell>
+                ))}
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <br />
+      <Typography variant='h6' gutterBottom>
+        Addition Summary
+      </Typography>
+
+      <TableContainer component={Paper}>
+        <Table className={classes.table} size='small' aria-label='a dense table'>
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              {minerals.map((key) => (
+                <TableCell key={key} align='right'>{key}</TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell component='th' scope='row'>g&nbsp;per&nbsp;Litre</TableCell>
+                {minerals.map((m) => (
+                  <TableCell align='right'>
+                    {unscaledMineralAdditions[m].toFixed(3)}
+                  </TableCell>
+                ))}
+            </TableRow>
+
+            <TableRow>
+              <TableCell component='th' scope='row'>Total&nbsp;(g)</TableCell>
+                {minerals.map((m) => (
+                  <TableCell align='right'>
+                    {scaledMineralAdditions[m].toFixed(2)}
+                  </TableCell>
+                ))}
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+
     </React.Fragment>
   );
 }
+
+//<br />
+//      <Grid container spacing={2}>
+//        <Grid item xs={12} sm={6}>
+//          <Typography variant='h6' gutterBottom className={classes.title}>Total Water Volume</Typography>
+//          <br />
+//          <Typography gutterBottom><em>{waterVolume} litres</em></Typography>
+//        </Grid>
+//        <Grid item container direction='column' xs={12} sm={6}>
+//          <Typography variant='h6' gutterBottom className={classes.title}>Payment details</Typography>
+//          <Grid container>
+//            {payments.map((payment) => (
+//              <React.Fragment key={payment.name}>
+//                <Grid item xs={6}>
+//                  <Typography gutterBottom>{payment.name}</Typography>
+//                </Grid>
+//                <Grid item xs={6}>
+//                  <Typography gutterBottom>{payment.detail}</Typography>
+//                </Grid>
+//              </React.Fragment>
+//            ))}
+//          </Grid>
+//        </Grid>
+//      </Grid>

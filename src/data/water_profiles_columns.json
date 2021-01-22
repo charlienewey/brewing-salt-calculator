@@ -1,9 +1,9 @@
 [
     {"selector": "water_profile", "name": "Water Profile", "sortable": true},
-    {"selector": "calcium", "name": "Calcium (ppm)", "sortable": true},
-    {"selector": "magnesium", "name": "Magnesium (ppm)", "sortable": true},
-    {"selector": "sodium", "name": "Sodium (ppm)", "sortable": true},
-    {"selector": "sulfate", "name": "Sulfate (ppm)", "sortable": true},
-    {"selector": "chloride", "name": "Chloride (ppm)", "sortable": true},
-    {"selector": "bicarbonate", "name": "Bicarbonate (ppm)", "sortable": true}
+    {"selector": "calcium", "name": "Calcium", "sortable": true},
+    {"selector": "magnesium", "name": "Magnesium", "sortable": true},
+    {"selector": "sodium", "name": "Sodium", "sortable": true},
+    {"selector": "sulfate", "name": "Sulfate", "sortable": true},
+    {"selector": "chloride", "name": "Chloride", "sortable": true},
+    {"selector": "bicarbonate", "name": "Bicarbonate", "sortable": true}
 ]
