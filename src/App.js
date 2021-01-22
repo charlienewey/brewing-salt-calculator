@@ -21,8 +21,6 @@ import { WaterProfilesTable } from './DataTables';
 import Review from './Review';
 
 
-// ====================================
-
 const roWater = {
   calcium: 1,
   magnesium: 0,
@@ -31,19 +29,6 @@ const roWater = {
   chloride: 4,
   bicarbonate: 16
 };
-
-const target = {
-  calcium: 140,
-  magnesium: 18,
-  sodium: 25,
-  sulfate: 300,
-  chloride: 55,
-  bicarbonate: 110
-}
-
-console.log(solveWaterChemistry(roWater, target, 20));
-
-// ====================================
 
 
 function Copyright() {
