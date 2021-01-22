@@ -47,7 +47,7 @@ class WaterProfilesTable extends React.Component {
             onRowClicked={this.selectRow}
             pagination
             paginationPerPage={10}
-            defaultSortField='water_profile'>
+            defaultSortField='style'>
           </DataTable>
         </Grid>
       </Grid>

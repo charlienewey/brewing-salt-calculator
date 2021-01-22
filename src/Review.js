@@ -35,16 +35,18 @@ export default function Review(props) {
   const availableMinerals = props.state.brewingProfile.availableMinerals;
   const waterVolume = parseFloat(props.state.brewingProfile.waterVolume);
 
+  console.log(props.state);
+
   const minerals = mineralProfiles.map((m) => m.mineral);
   const keys = Object.keys(source);
 
-  let solvedProfile = {...target};
+  let solved = {...target};
   let scaledMineralAdditions = {};
   minerals.map((m) => scaledMineralAdditions[m] = 0.0);
   let unscaledMineralAdditions = {...scaledMineralAdditions};
   if (JSON.stringify(source) !== JSON.stringify(target)) {
     const solverOutput = solveWaterChemistry(source, target, availableMinerals, waterVolume);
-    solvedProfile = {...solverOutput['apparentProfile']};
+    solved = {...solverOutput['apparentProfile']};
     scaledMineralAdditions = {...solverOutput['scaledAdditions']};
     unscaledMineralAdditions = {...solverOutput['unscaledAdditions']};
   }
@@ -76,19 +78,28 @@ export default function Review(props) {
             </TableRow>
 
             <TableRow>
-              <TableCell component='th' scope='row'>Target Water Profile</TableCell>
+              <TableCell component='th' scope='row'>Target Water Profile (± Margin of Error)</TableCell>
                 {keys.map((key) => (
                   <TableCell key={key} align='right'>
-                    {target[key]}
+                    {target[key] + ' (±' + target['margin'][key] + ')'}
                   </TableCell>
                 ))}
             </TableRow>
 
             <TableRow>
-              <TableCell component='th' scope='row'><em>Optimised Water Profile</em></TableCell>
+              <TableCell component='th' scope='row'><strong>Optimised Water Profile</strong></TableCell>
                 {keys.map((key) => (
                   <TableCell key={key} align='right'>
-                    <em>{solvedProfile[key].toFixed(0)}</em>
+                    <strong>{solved[key].toFixed(0)}</strong>
+                  </TableCell>
+                ))}
+            </TableRow>
+
+            <TableRow>
+              <TableCell component='th' scope='row'>Suitable?</TableCell>
+                {keys.map((key) => (
+                  <TableCell key={key} align='right'>
+                    {Math.abs(solved[key].toFixed(0) - target[key]) <= target['margin'][key] ? '✓' : '✗' }
                   </TableCell>
                 ))}
             </TableRow>

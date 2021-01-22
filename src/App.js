@@ -153,7 +153,23 @@ class SaltSolverApp extends React.Component  {
   };
 
   selectPresetTarget (row) {
-    this.setState({targetProfile: row});
+    let state = {};
+    let keys = Object.keys(row);
+    for (let i = 0; i < keys.length; i++) {
+      if (keys[i] === 'style') {
+        state[keys[i]] = row[keys[i]];
+      } else {
+        // set up target midpoint
+        state[keys[i]] = row[keys[i]].midpoint;
+
+        // set up margin for error
+        if (! state['margin']) {
+          state['margin'] = {};
+        }
+        state['margin'][keys[i]] = row[keys[i]].margin;
+      }
+    };
+    this.setState({targetProfile: state});
   };
 
   handleNext () {
@@ -174,10 +190,13 @@ class SaltSolverApp extends React.Component  {
             </Typography>
 
             <Typography gutterBottom>
-              Enter your source water profile here, with each mineral in parts per million.
+              Enter your source water profile here, with each mineral in parts per million. You can usually find these from
+              your municipal water provider's reports - or, if you're using bottled water, on the side of the bottle.
+            </Typography>
 
-              <br />
-              The default values here are those of Reverse Osmosis water - so if that's what you're using, just click "Next".
+            <Typography gutterBottom>
+              The default values below are those of Reverse Osmosis water - but if you're using distilled water, you can
+              just fill this list with zeroes.
             </Typography>
             <br />
             <IonProfileEntry
@@ -196,10 +215,14 @@ class SaltSolverApp extends React.Component  {
 
             <Typography gutterBottom>
               Enter the values for your target water profile here. If you aren't sure which values to go for,
-              try using one of the presets listed in the table below. For example, if you're brewing an American IPA,
-              it's probably a good idea to use the "Pale Ale Profile".
+              try using one of the presets listed in the table below. This list covers each major style in the 
+              2015 BJCP style guide. For example, if you're brewing an American IPA, you can use "21A - American IPA" 
+              as a starting point.
+            </Typography>
 
-              These values come <em>directly</em> from <a href="https://www.brunwater.com/">Martin Brungard's "Bru'n Water" spreadsheet</a>.
+            <Typography gutterBottom>
+              These values come from <a href="https://www.brunwater.com/">Martin Brungard's "Bru'n Water" spreadsheet</a> 
+              and <a href="https://www.moneaudebrassage.fr/">Mon Eau de Brassage</a>.
             </Typography>
             <br />
             <div>
@@ -215,7 +238,7 @@ class SaltSolverApp extends React.Component  {
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls='panel2a-content'
                 id='panel2a-header'>
-                Water Profile Presets
+                Presets for BJCP Beer Styles
               </AccordionSummary>
               <AccordionDetails>
                 <WaterProfilesTable
