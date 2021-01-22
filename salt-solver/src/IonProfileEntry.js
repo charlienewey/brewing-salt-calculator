@@ -5,23 +5,23 @@ import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 
-class MineralEntry extends React.Component {
+class IonProfileEntry extends React.Component {
   constructor(props) {
     super(props);
     this.classNames = props.classNames;
-    this.handleMineralChange = this.handleMineralChange.bind(this);
+    this.handleIonChange = this.handleIonChange.bind(this);
   };
 
-  handleMineralChange (event, mineral) {
-    if (this.props.onMineralChange !== undefined && this.props.onMineralChange !== null) {
-      this.props.onMineralChange(event.target.value, mineral);
+  handleIonChange (event, ion) {
+    if (this.props.onIonChange !== undefined && this.props.onIonChange !== null) {
+      this.props.onIonChange(event.target.value, ion);
     } else {
-      throw new Error('Missing onMineralChange prop');
+      throw new Error('Missing onIonChange prop');
     }
   };
 
   render () {
-    const classNames = [this.classNames, 'MineralEntry'].join(' ')
+    const classNames = [this.classNames, 'IonEntry'].join(' ')
     return (
       <Grid container justify='center' className={classNames} spacing={1}>
         <Grid item xs={12} sm={6} md={4} lg={2}>
@@ -30,7 +30,7 @@ class MineralEntry extends React.Component {
             type='number'
             min={0.0}
             value={this.props.state.calcium}
-            onChange={(e) => this.handleMineralChange(e, 'calcium')}
+            onChange={(e) => this.handleIonChange(e, 'calcium')}
             InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
             variant="outlined"
             required
@@ -44,7 +44,7 @@ class MineralEntry extends React.Component {
             type='number'
             min={0.0}
             value={this.props.state.magnesium}
-            onChange={(e) => this.handleMineralChange(e, 'magnesium')}
+            onChange={(e) => this.handleIonChange(e, 'magnesium')}
             InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
             variant="outlined"
             required
@@ -58,7 +58,7 @@ class MineralEntry extends React.Component {
             type='number'
             min={0.0}
             value={this.props.state.sodium}
-            onChange={(e) => this.handleMineralChange(e, 'sodium')}
+            onChange={(e) => this.handleIonChange(e, 'sodium')}
             InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
             variant="outlined"
             required
@@ -72,7 +72,7 @@ class MineralEntry extends React.Component {
             type='number'
             min={0.0}
             value={this.props.state.sulfate}
-            onChange={(e) => this.handleMineralChange(e, 'sulfate')}
+            onChange={(e) => this.handleIonChange(e, 'sulfate')}
             InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
             variant="outlined"
             required
@@ -86,7 +86,7 @@ class MineralEntry extends React.Component {
             type='number'
             min={0.0}
             value={this.props.state.chloride}
-            onChange={(e) => this.handleMineralChange(e, 'chloride')}
+            onChange={(e) => this.handleIonChange(e, 'chloride')}
             InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
             variant="outlined"
             required
@@ -100,7 +100,7 @@ class MineralEntry extends React.Component {
             type='number'
             min={0.0}
             value={this.props.state.bicarbonate}
-            onChange={(e) => this.handleMineralChange(e, 'bicarbonate')}
+            onChange={(e) => this.handleIonChange(e, 'bicarbonate')}
             InputProps={{ startAdornment: <InputAdornment position="start">ppm</InputAdornment> }}
             variant="outlined"
             required
@@ -112,5 +112,4 @@ class MineralEntry extends React.Component {
   }
 };
 
-
-export default MineralEntry;
+export default IonProfileEntry;

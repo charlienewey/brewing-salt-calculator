@@ -15,18 +15,36 @@ import Button from '@material-ui/core/Button';
 import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 
-import MineralEntry from './MineralEntry';
+import IonProfileEntry from './IonProfileEntry';
+import solveWaterChemistry from './Solve';
 import { WaterProfilesTable } from './DataTables';
 import Review from './Review';
 
+
+// ====================================
+
 const roWater = {
-  calcium: "1",
-  magnesium: "0",
-  sodium: "0",
-  sulfate: "0",
-  chloride: "4",
-  bicarbonate: "16"
+  calcium: 1,
+  magnesium: 0,
+  sodium: 0,
+  sulfate: 0,
+  chloride: 4,
+  bicarbonate: 16
 };
+
+const target = {
+  calcium: 140,
+  magnesium: 18,
+  sodium: 25,
+  sulfate: 300,
+  chloride: 55,
+  bicarbonate: 110
+}
+
+console.log(solveWaterChemistry(roWater, target, 20));
+
+// ====================================
+
 
 function Copyright() {
   return (
@@ -145,11 +163,11 @@ class SaltSolverApp extends React.Component  {
               Source Water Profile Input
             </Typography>
             <br />
-            <MineralEntry
+            <IonProfileEntry
               classNames='sourceProfile'
               state={this.state.sourceProfile}
-              onMineralChange={this.handleSourceProfileChange}>
-            </MineralEntry>
+              onIonChange={this.handleSourceProfileChange}>
+            </IonProfileEntry>
           </React.Fragment>
         );
       case 1:
@@ -160,11 +178,11 @@ class SaltSolverApp extends React.Component  {
             </Typography>
             <br />
             <div>
-              <MineralEntry
+              <IonProfileEntry
                 classNames='targetProfile'
                 state={this.state.targetProfile}
-                onMineralChange={this.handleTargetProfileChange}>
-              </MineralEntry>
+                onIonChange={this.handleTargetProfileChange}>
+              </IonProfileEntry>
             </div>
             <br />
             <Accordion>

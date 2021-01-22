@@ -1,6 +1,6 @@
 [
     {
-        "mineral":"Gypsum (CaSO4 x 2H2O) ",
+        "mineral":"Gypsum",
         "addition":1,
         "calcium":232.8,
         "magnesium":null,
@@ -10,7 +10,7 @@
         "bicarbonate":null
     },
     {
-        "mineral":"Calcium Chloride (CaCl2) ",
+        "mineral":"Calcium Chloride",
         "addition":1,
         "calcium":361.1,
         "magnesium":null,
@@ -20,7 +20,7 @@
         "bicarbonate":null
     },
     {
-        "mineral":"Epsom Salt (MgSO4 x 7H2O)",
+        "mineral":"Epsom Salt",
         "addition":1,
         "calcium":null,
         "magnesium":98.6,
@@ -30,7 +30,7 @@
         "bicarbonate":null
     },
     {
-        "mineral":"Magnesium Chloride (MgCl2 x 6H2O)",
+        "mineral":"Magnesium Chloride",
         "addition":1,
         "calcium":null,
         "magnesium":119.5,
@@ -40,7 +40,7 @@
         "bicarbonate":null
     },
     {
-        "mineral":"Canning Salt (NaCl)",
+        "mineral":"Canning Salt",
         "addition":1,
         "calcium":null,
         "magnesium":null,
@@ -50,7 +50,7 @@
         "bicarbonate":null
     },
     {
-        "mineral":"Baking Soda (NaHCO3)",
+        "mineral":"Baking Soda",
         "addition":1,
         "calcium":null,
         "magnesium":null,
@@ -60,7 +60,7 @@
         "bicarbonate":726.3
     },
     {
-        "mineral":"Chalk (CaCO3)",
+        "mineral":"Chalk",
         "addition":1,
         "calcium":400.5,
         "magnesium":null,
@@ -70,7 +70,7 @@
         "bicarbonate":1219.8
     },
     {
-        "mineral":"Pickling Lime (Ca(OH)2)",
+        "mineral":"Pickling Lime",
         "addition":1,
         "calcium":541.0,
         "magnesium":null,
