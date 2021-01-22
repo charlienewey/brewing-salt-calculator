@@ -28,10 +28,8 @@
   color: #61dafb;
 }
 
-.WaterProfilesTable {
-  margin: 0 auto;
-  width: 50%;
-  min-width: 320px;
+.MineralEntry input[type=number] {
+  width: 5em;
 }
 
 @keyframes App-logo-spin {

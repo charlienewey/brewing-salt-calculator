@@ -1,0 +1,9 @@
+[
+    {"selector": "mineral", "name": "Mineral"},
+    {"selector": "calcium", "name": "Calcium (ppm)"},
+    {"selector": "magnesium", "name": "Magnesium (ppm)"},
+    {"selector": "sodium", "name": "Sodium (ppm)"},
+    {"selector": "sulfate", "name": "Sulfate (ppm)"},
+    {"selector": "chloride", "name": "Chloride (ppm)"},
+    {"selector": "bicarbonate", "name": "Bicarbonate (ppm)"}
+]

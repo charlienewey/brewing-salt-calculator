@@ -1,47 +1,64 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import DataTable from 'react-data-table-component';
+import Accordion from '@material-ui/core/Accordion';
+import AccordionSummary from '@material-ui/core/AccordionSummary';
+import AccordionDetails from '@material-ui/core/AccordionDetails';
+import Container from '@material-ui/core/Container';
 
-import WaterProfiles from './data/water_profiles.json';
-import WaterProfilesColumns from './data/water_profiles_columns.json';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+import { MineralEntry } from './MineralEntry';
+import { WaterProfilesTable } from './DataTables';
 
 import './App.css';
 
-// before loading app, set isSelected to false for all rows
-for (var i in WaterProfiles) {
-  WaterProfiles[i].isSelected = false;
-};
+class SaltSolverApp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {clickedRow: null};
+    this.selectRow = this.selectRow.bind(this);
+  };
 
-function isEmpty (obj) {
-  return (
-    [Object, Array].includes((obj || {}).constructor) &&
-    !Object.entries(obj || {}).length
-  )
-};
+  selectRow (row) {
+    this.setState({clickedRow: row});
+  };
 
-class WaterProfilesTable extends React.Component {
   render () {
     return (
-      <div className='WaterProfilesTable'>
-        <DataTable
-          title='Water Profile Presets'
-          data={WaterProfiles}
-          columns={WaterProfilesColumns}
-          striped={true}
-          highlightOnHover={true}
-          pointerOnHover={true}>
-        </DataTable>
+      <div className='App'>
+        <Container maxWidth='lg'>
+          <div className='WaterProfileInput'>
+            <h2>Source Water Profile Input</h2>
+            <MineralEntry classNames='SourceProfileEntry'></MineralEntry>
+          </div>
+
+          <div className='TargetProfileInput'>
+            <h2>Target Water Profile Input</h2>
+            <MineralEntry state={this.state.clickedRow} classNames='TargetProfileEntry'></MineralEntry>
+          </div>
+
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel2a-content"
+              id="panel2a-header"
+            >
+            Water Profile Presets
+            </AccordionSummary>
+            <AccordionDetails>
+              <div className='Tables'>
+                <WaterProfilesTable selectRow={this.selectRow}></WaterProfilesTable>
+              </div>
+            </AccordionDetails>
+          </Accordion>
+        </Container>
       </div>
     );
   };
-};
+}
 
 function App () {
-  return (
-    <div className='App'>
-      <WaterProfilesTable></WaterProfilesTable>)
-    </div>
-  );
-}
+  return <SaltSolverApp></SaltSolverApp>;
+};
 
 export default App;
