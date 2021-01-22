@@ -2,7 +2,6 @@ import React from 'react';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,13 +13,6 @@ import Typography from '@material-ui/core/Typography';
 
 import solveWaterChemistry from './SolveProfile';
 import mineralProfiles from './data/mineral_profiles.json';
-
-const payments = [
-  { name: 'Card type', detail: 'Visa' },
-  { name: 'Card holder', detail: 'Mr John Smith' },
-  { name: 'Card number', detail: 'xxxx-xxxx-xxxx-1234' },
-  { name: 'Expiry date', detail: '04/2024' },
-];
 
 const useStyles = makeStyles((theme) => ({
   listItem: {
@@ -34,13 +26,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default function Review(props) {
+  console.log('state', props.state);
   const classes = useStyles();
 
   const source = props.state.sourceProfile;
   const target = props.state.targetProfile;
-  const waterVolume = props.state.brewingProfile.waterVolume;
+  const availableMinerals = props.state.brewingProfile.availableMinerals;
+  const waterVolume = parseFloat(props.state.brewingProfile.waterVolume);
 
   const minerals = mineralProfiles.map((m) => m.mineral);
   const keys = Object.keys(source);
@@ -50,7 +43,7 @@ export default function Review(props) {
   minerals.map((m) => scaledMineralAdditions[m] = 0.0);
   let unscaledMineralAdditions = {...scaledMineralAdditions};
   if (JSON.stringify(source) !== JSON.stringify(target)) {
-    const solverOutput = solveWaterChemistry(source, target, waterVolume);
+    const solverOutput = solveWaterChemistry(source, target, availableMinerals, waterVolume);
     solvedProfile = {...solverOutput['apparentProfile']};
     scaledMineralAdditions = {...solverOutput['scaledAdditions']};
     unscaledMineralAdditions = {...solverOutput['unscaledAdditions']};
@@ -58,10 +51,6 @@ export default function Review(props) {
 
   return (
     <React.Fragment>
-      <Typography variant='h6' gutterBottom className={classes.title}>Total Water Volume</Typography>
-      <Typography gutterBottom>{waterVolume} litres</Typography>
-      <br />
-
       <Typography variant='h6' gutterBottom>
         Water Profile Summary
       </Typography>
@@ -80,7 +69,7 @@ export default function Review(props) {
             <TableRow>
               <TableCell component='th' scope='row'>Source Water Profile</TableCell>
                 {keys.map((key) => (
-                  <TableCell align='right'>
+                  <TableCell key={key} align='right'>
                     {source[key]}
                   </TableCell>
                 ))}
@@ -89,7 +78,7 @@ export default function Review(props) {
             <TableRow>
               <TableCell component='th' scope='row'>Target Water Profile</TableCell>
                 {keys.map((key) => (
-                  <TableCell align='right'>
+                  <TableCell key={key} align='right'>
                     {target[key]}
                   </TableCell>
                 ))}
@@ -98,7 +87,7 @@ export default function Review(props) {
             <TableRow>
               <TableCell component='th' scope='row'><em>Optimised Water Profile</em></TableCell>
                 {keys.map((key) => (
-                  <TableCell align='right'>
+                  <TableCell key={key} align='right'>
                     <em>{solvedProfile[key].toFixed(0)}</em>
                   </TableCell>
                 ))}
@@ -124,21 +113,23 @@ export default function Review(props) {
           </TableHead>
           <TableBody>
             <TableRow>
-              <TableCell component='th' scope='row'>g&nbsp;per&nbsp;Litre</TableCell>
-                {minerals.map((m) => (
-                  <TableCell align='right'>
-                    {unscaledMineralAdditions[m].toFixed(3)}
-                  </TableCell>
-                ))}
+              <TableCell component='th' scope='row'>per&nbsp;Litre</TableCell>
+              {minerals.map((m) => (
+                <TableCell key={m} align='right'>
+                  {(unscaledMineralAdditions[m] || 0.0).toFixed(3)}g
+                </TableCell>
+              ))}
             </TableRow>
 
             <TableRow>
-              <TableCell component='th' scope='row'>Total&nbsp;(g)</TableCell>
-                {minerals.map((m) => (
-                  <TableCell align='right'>
-                    {scaledMineralAdditions[m].toFixed(2)}
-                  </TableCell>
-                ))}
+              <TableCell component='th' scope='row'>
+                Total&nbsp;(to&nbsp;treat&nbsp;{waterVolume.toFixed(2)}L)
+              </TableCell>
+              {minerals.map((m) => (
+                <TableCell key={m} align='right'>
+                  {(scaledMineralAdditions[m] || 0.0).toFixed(2)}g
+                </TableCell>
+              ))}
             </TableRow>
           </TableBody>
         </Table>
@@ -146,28 +137,4 @@ export default function Review(props) {
 
     </React.Fragment>
   );
-}
-
-//<br />
-//      <Grid container spacing={2}>
-//        <Grid item xs={12} sm={6}>
-//          <Typography variant='h6' gutterBottom className={classes.title}>Total Water Volume</Typography>
-//          <br />
-//          <Typography gutterBottom><em>{waterVolume} litres</em></Typography>
-//        </Grid>
-//        <Grid item container direction='column' xs={12} sm={6}>
-//          <Typography variant='h6' gutterBottom className={classes.title}>Payment details</Typography>
-//          <Grid container>
-//            {payments.map((payment) => (
-//              <React.Fragment key={payment.name}>
-//                <Grid item xs={6}>
-//                  <Typography gutterBottom>{payment.name}</Typography>
-//                </Grid>
-//                <Grid item xs={6}>
-//                  <Typography gutterBottom>{payment.detail}</Typography>
-//                </Grid>
-//              </React.Fragment>
-//            ))}
-//          </Grid>
-//        </Grid>
-//      </Grid>
+};

@@ -3,23 +3,40 @@ import { fcnnlsVector } from 'ml-fcnnls';
 
 import mineralProfiles from './data/mineral_profiles.json';
 
-export default function solveWaterChemistry (sourceProfile, targetProfile, nLitres) {
+export default function solveWaterChemistry (sourceProfile, targetProfile, availableMinerals, nLitres) {
+  const waterVolume = (nLitres || 1.0);
+
   // store keys to ensure dictionaries are traversed in the same order
   const ionNames = Object.keys(sourceProfile);
-  const mineralNames = mineralProfiles.map((m) => m.mineral);
+  const allMinerals = mineralProfiles.map((m) => m.mineral);
+  
+  // if "in stock" minerals empty or undefined, assume all in stock
+  if (availableMinerals === null ||
+      availableMinerals === undefined ||
+      Object.keys(availableMinerals).length === 0) {
+    let availableMinerals = {};
+    for (let i = 0; i < allMinerals.length; i++) {
+      let mineral = allMinerals[i];
+      availableMinerals[mineral] = true;
+    }
+  };
+
+  // filter for allowable minerals
+  const mineralNames = allMinerals.filter((m) => availableMinerals[m]);
 
   // scale target variables to 1.0 - i.e. use MAPE rather than MSE as objective func
-  const y = ionNames.map((ion) => (targetProfile[ion] - sourceProfile[ion]) / targetProfile[ion]);
+  const y = ionNames.map((ion) => (targetProfile[ion] - sourceProfile[ion]));
 
   // traverse mineral contribution data
   let X = [];
   for (let i = 0; i < ionNames.length; i++) {
     let X_row = [];
+    let ion = ionNames[i];
     for (let j = 0; j < mineralNames.length; j++) {
-      const ion = ionNames[i];
-      const mineralValue = (((mineralProfiles[j][ion] || 0.0) / targetProfile[ion]) || 0.0);
+      let mineral = mineralProfiles[j];
+      const mineralValue = ((mineral[ion] || 0.0) || 0.0);
       X_row.push(mineralValue);
-    }
+    };
     X.push(X_row);
   };
   
@@ -27,14 +44,15 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, nLitr
   const Xm = new Matrix(X);
 
   // compute result
-  const w = fcnnlsVector(Xm, y);
+  const options = {maxIterations: 1000};
+  const w = fcnnlsVector(Xm, y, options);
 
   // convert result into a dictionary
   let wUnscaled = {};
   let wScaled = {};
   for (let i = 0; i < mineralNames.length; i++) {
-    const unscaledValue = (w[i] / y[i]);
-    const scaledValue = (unscaledValue * nLitres);
+    const unscaledValue = w[i];
+    const scaledValue = (unscaledValue * waterVolume);
     wUnscaled[mineralProfiles[i]['mineral']] = 0.0;
     wScaled[mineralProfiles[i]['mineral']] = 0.0;
     if (! isNaN(scaledValue)) {
@@ -47,7 +65,7 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, nLitr
   let apparentProfile = {};
   for (let i = 0; i < mineralNames.length; i++) {
     const mineral = mineralProfiles[i];
-    const scaledValue = (w[i] / y[i]);
+    const scaledValue = w[i];
     if (! isNaN(scaledValue) ) {
       for  (let j = 0; j < ionNames.length; j++) {
         const ion = ionNames[j];
@@ -57,9 +75,11 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, nLitr
     }
   }
 
-  return {
+  const solvedProfile = {
     unscaledAdditions: wUnscaled,
     scaledAdditions: wScaled,
     apparentProfile: apparentProfile
   };
+
+  return solvedProfile;
 };
