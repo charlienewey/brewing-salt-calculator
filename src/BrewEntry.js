@@ -47,7 +47,7 @@ class BrewEntry extends React.Component {
             <FormLabel component='legend'>Which brewing salts do you have available?</FormLabel>
             <FormGroup>
               {mineralProfiles.map((profile) => {
-                const mineralKey = profile.mineral.replace(' ', '')
+                const mineralKey = profile.mineral;
                 return (<FormControlLabel key={profile.mineral} control={
                   <Checkbox
                     name={mineralKey}

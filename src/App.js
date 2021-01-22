@@ -79,7 +79,7 @@ const styles = (theme) => ({
 });
 
 class SaltSolverApp extends React.Component  {
-  steps = ['Source profile input', 'Target profile input', 'Brew parameter input', 'Review your changes'];
+  steps = ['Source profile input', 'Target profile input', 'Brewing parameter input', 'Review results'];
 
   defaultState = {
     activeStep: 0,
@@ -88,14 +88,14 @@ class SaltSolverApp extends React.Component  {
     brewingProfile: {
       waterVolume: 20.0,
       availableMinerals: {
-        Gypsum: true,
-        CalciumChloride: true,
-        EpsomSalt: true,
-        MagnesiumChloride: false,
-        CanningSalt: true,
-        BakingSoda: true,
-        Chalk: true,
-        PicklingLime: false
+        'Gypsum': true,
+        'Calcium Chloride': true,
+        'Epsom Salt': true,
+        'Magnesium Chloride': false,
+        'Canning Salt': true,
+        'Baking Soda': true,
+        'Chalk': true,
+        'Pickling Lime': false
       }
     }
   };
