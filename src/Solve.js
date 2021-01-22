@@ -6,7 +6,9 @@ import MineralProfiles from './data/mineral_profiles.json';
 export default function solveWaterChemistry (sourceProfile, targetProfile, nLitres) {
   // traverse both dictionaries in the same order
   const ionNames = Object.keys(sourceProfile);
-  let y = ionNames.map((ion) => targetProfile[ion] - sourceProfile[ion]);
+
+  // scale target variables to 1.0 - use MAPE rather than MSE as objective func
+  let y = ionNames.map((ion) => (targetProfile[ion] - sourceProfile[ion]) / targetProfile[ion]);
 
   // traverse mineral contribution data
   let X = [];
@@ -14,7 +16,9 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, nLitr
   for (let i = 0; i < ionNames.length; i++) {
     let X_row = [];
     for (let j = 0; j < mineralNames.length; j++) {
-      X_row.push(MineralProfiles[j][ionNames[i]] || 0.0);
+      let ion = ionNames[i];
+      let mineralValue = (((MineralProfiles[j][ion] || 0.0) / targetProfile[ion]) || 0.0);
+      X_row.push(mineralValue);
     }
     X.push(X_row);
   };
@@ -26,12 +30,14 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, nLitr
   let w = fcnnlsVector(Xm, y);
 
   // convert result into a dictionary
-  console.log(MineralProfiles);
-  console.log(mineralNames);
-
   let w_return = {};
   for (let i = 0; i < mineralNames.length; i++) {
-    w_return[MineralProfiles[i]['mineral']] = (w[i] * nLitres).toFixed(1);
+    let scaledValue = ((w[i] / y[i]) * nLitres).toFixed(1);
+    if (isNaN(scaledValue)) {
+      w_return[MineralProfiles[i]['mineral']] = "0.0";
+    } else {
+      w_return[MineralProfiles[i]['mineral']] = scaledValue;
+    }
   };
 
   return w_return;
