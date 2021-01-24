@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/brewing-salt-calculator/static/css/main.2ae47eeb.chunk.css",
+    "main.js": "/brewing-salt-calculator/static/js/main.c576798e.chunk.js",
+    "main.js.map": "/brewing-salt-calculator/static/js/main.c576798e.chunk.js.map",
+    "runtime-main.js": "/brewing-salt-calculator/static/js/runtime-main.aa61bfe4.js",
+    "runtime-main.js.map": "/brewing-salt-calculator/static/js/runtime-main.aa61bfe4.js.map",
+    "static/js/2.f6b42617.chunk.js": "/brewing-salt-calculator/static/js/2.f6b42617.chunk.js",
+    "static/js/2.f6b42617.chunk.js.map": "/brewing-salt-calculator/static/js/2.f6b42617.chunk.js.map",
+    "static/js/3.590c7a1c.chunk.js": "/brewing-salt-calculator/static/js/3.590c7a1c.chunk.js",
+    "static/js/3.590c7a1c.chunk.js.map": "/brewing-salt-calculator/static/js/3.590c7a1c.chunk.js.map",
+    "index.html": "/brewing-salt-calculator/index.html",
+    "static/css/main.2ae47eeb.chunk.css.map": "/brewing-salt-calculator/static/css/main.2ae47eeb.chunk.css.map",
+    "static/js/2.f6b42617.chunk.js.LICENSE.txt": "/brewing-salt-calculator/static/js/2.f6b42617.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.aa61bfe4.js",
+    "static/js/2.f6b42617.chunk.js",
+    "static/css/main.2ae47eeb.chunk.css",
+    "static/js/main.c576798e.chunk.js"
+  ]
+}
