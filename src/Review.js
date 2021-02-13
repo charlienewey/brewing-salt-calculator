@@ -26,6 +26,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function updateSolutionProfile(ions, oldProfile, updateProfile) {
+  let newProfile = {};
+  for (let i = 0; i < ions.length; i++) {
+    let ion = ions[i];
+    if (updateProfile && updateProfile[ion]) {
+      newProfile[ion] = updateProfile[ion];
+    } else {
+      newProfile[ion] = 0.0;
+    }
+  };
+  return newProfile;
+}
+
 export default function Review(props) {
   const classes = useStyles();
 
@@ -51,7 +64,7 @@ export default function Review(props) {
 
   if (JSON.stringify(source) !== JSON.stringify(target)) {
     const solverOutput = solveWaterChemistry(source, target, availableMinerals, waterVolume);
-    solved = {...solverOutput['apparentProfile']};
+    solved = updateSolutionProfile(ions, solved, solverOutput['apparentProfile']);
     scaledMineralAdditions = {...solverOutput['scaledAdditions']};
     unscaledMineralAdditions = {...solverOutput['unscaledAdditions']};
   }
@@ -95,7 +108,7 @@ export default function Review(props) {
               <TableCell component='th' scope='row'><strong>Optimised Water Profile</strong></TableCell>
                 {ions.map((ion) => (
                   <TableCell key={ion} align='right'>
-                    <strong>{solved[ion].toFixed(0)}</strong>
+                    <strong>{(solved[ion] || 0.0).toFixed(0)}</strong>
                   </TableCell>
                 ))}
             </TableRow>
@@ -105,7 +118,7 @@ export default function Review(props) {
                 <TableCell component='th' scope='row'>Suitable?</TableCell>
                   {ions.map((ion) => (
                     <TableCell key={ion} align='right'>
-                      {Math.abs(solved[ion].toFixed(0) - target[ion]) <= target['margin'][ion] ? '✓' : '✗' }
+                      {Math.abs((solved[ion] || 0.0).toFixed(0) - target[ion]) <= target['margin'][ion] ? '✓' : '✗' }
                     </TableCell>
                   ))}
               </TableRow>
