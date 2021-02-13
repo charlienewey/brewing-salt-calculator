@@ -26,18 +26,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function updateSolutionProfile(ions, oldProfile, updateProfile) {
-  let newProfile = {};
-  for (let i = 0; i < ions.length; i++) {
-    let ion = ions[i];
-    if (updateProfile && updateProfile[ion]) {
-      newProfile[ion] = updateProfile[ion];
+function copyObjectWithDefaults(keys, target, defaultValue) {
+  let newObject = {};
+  for (let i = 0; i < keys.length; i++) {
+    let key = keys[i];
+    if (target && target[key]) {
+      newObject[key] = target[key];
     } else {
-      newProfile[ion] = 0.0;
+      newObject[key] = defaultValue;
     }
   };
-  return newProfile;
-}
+  return newObject;
+};
 
 export default function Review(props) {
   const classes = useStyles();
@@ -51,22 +51,18 @@ export default function Review(props) {
   const minerals = mineralProfiles.map((m) => m.mineral);
   const ions = Object.keys(source);
 
-  // create blank solution profile
   let solved = {};
-  for (let i = 0; i < minerals.length; i++) {
-    let mineral = minerals[i];
-    solved[mineral] = 0.0
-  };
-
   let scaledMineralAdditions = {};
-  minerals.map((m) => scaledMineralAdditions[m] = 0.0);
-  let unscaledMineralAdditions = {...scaledMineralAdditions};
+  let unscaledMineralAdditions = {};
 
   if (JSON.stringify(source) !== JSON.stringify(target)) {
     const solverOutput = solveWaterChemistry(source, target, availableMinerals, waterVolume);
-    solved = updateSolutionProfile(ions, solved, solverOutput['apparentProfile']);
-    scaledMineralAdditions = {...solverOutput['scaledAdditions']};
-    unscaledMineralAdditions = {...solverOutput['unscaledAdditions']};
+
+    console.log(solverOutput['scaledAdditions']);
+
+    solved = copyObjectWithDefaults(ions, solverOutput['apparentProfile'], 0.0);
+    scaledMineralAdditions = copyObjectWithDefaults(minerals, solverOutput['scaledAdditions'], 0.0);
+    unscaledMineralAdditions = copyObjectWithDefaults(minerals, solverOutput['unscaledAdditions'], 0.0);
   }
 
   return (

@@ -44,9 +44,14 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, avail
     let X_row = [];
     const ion = ionNames[i];
     for (let j = 0; j < mineralNames.length; j++) {
-      const mineral = mineralProfiles[j];
-      const mineralValue = parseFloat(mineral[ion] || 0.0) / margins[ion];
-      X_row.push(mineralValue);
+      const mineralName = mineralNames[j];
+      for (let k = 0; k < mineralProfiles.length; k++) {
+        const mineral = mineralProfiles[k];
+        if (mineral['mineral'] === mineralName) {
+          const mineralValue = parseFloat(mineral[ion] || 0.0) / margins[ion];
+          X_row.push(mineralValue);
+        }
+      };
     };
     X.push(X_row);
   };
@@ -62,29 +67,35 @@ export default function solveWaterChemistry (sourceProfile, targetProfile, avail
   let wUnscaled = {};
   let wScaled = {};
   for (let i = 0; i < mineralNames.length; i++) {
+    let mineralName = mineralNames[i];
     const unscaledValue = w[i];
     const scaledValue = (unscaledValue * waterVolume);
-    wUnscaled[mineralProfiles[i]['mineral']] = 0.0;
-    wScaled[mineralProfiles[i]['mineral']] = 0.0;
+    wUnscaled[mineralName] = 0.0;
+    wScaled[mineralName] = 0.0;
     if (! isNaN(scaledValue)) {
-      wScaled[mineralProfiles[i]['mineral']] = scaledValue;
-      wUnscaled[mineralProfiles[i]['mineral']] = unscaledValue;
+      wScaled[mineralName] = scaledValue;
+      wUnscaled[mineralName] = unscaledValue;
     }
   };
 
   // finally, reconstruct apparent profile
   let apparentProfile = {};
   for (let i = 0; i < mineralNames.length; i++) {
-    const mineral = mineralProfiles[i];
-    const scaledValue = w[i];
-    if (! isNaN(scaledValue) ) {
-      for  (let j = 0; j < ionNames.length; j++) {
-        const ion = ionNames[j];
-        const mineralValue = parseFloat(mineral[ion] || 0.0);
-        const contribution = mineralValue * scaledValue;
-        apparentProfile[ion] = parseFloat(apparentProfile[ion] || sourceProfile[ion]) + contribution;
+    const mineralName = mineralNames[i];
+    for (let j = 0; j < mineralProfiles.length; j++) {
+      const mineral = mineralProfiles[j];
+      if (mineral['mineral'] === mineralName) {
+        const scaledValue = w[i];
+        if (!isNaN(scaledValue)) {
+          for (let k = 0; k < ionNames.length; k++) {
+            const ion = ionNames[k];
+            const mineralValue = parseFloat(mineral[ion] || 0.0);
+            const contribution = mineralValue * scaledValue;
+            apparentProfile[ion] = parseFloat(apparentProfile[ion] || sourceProfile[ion]) + contribution;
+          }
+        }
       }
-    }
+    };
   }
 
   // ensure all fields are populated

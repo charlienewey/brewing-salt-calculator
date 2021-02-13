@@ -78,7 +78,7 @@ const styles = (theme) => ({
   },
 });
 
-class SaltSolverApp extends React.Component  {
+class SaltCalculatorApp extends React.Component  {
   steps = ['Source profile input', 'Target profile input', 'Brewing parameter input', 'Review results'];
 
   defaultState = {
@@ -306,4 +306,4 @@ class SaltSolverApp extends React.Component  {
   }
 }
 
-export default withStyles(styles)(SaltSolverApp);
+export default withStyles(styles)(SaltCalculatorApp);
